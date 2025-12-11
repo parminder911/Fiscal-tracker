@@ -1,0 +1,86 @@
+id: punjab_funds_summary
+namespace: fiscal_tracker
+description: "AI-powered workflow to summarize Punjab government spending data and identify anomalies"
+version: "1.0"
+
+tasks:
+  - id: fetch_village_data
+    type: io.kestra.plugin.core.http.Request
+    uri: "http://localhost:3000/api/villages"
+    method: GET
+    
+  - id: fetch_summary_data
+    type: io.kestra.plugin.core.http.Request
+    uri: "http://localhost:3000/api/summary"
+    method: GET
+
+  - id: analyze_with_ai
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      === FINANCIAL DATA SUMMARY ===
+      
+      Total Allocated: ₹{{ outputs.fetch_summary_data.body.data.totalAllocated | number }}
+      Total Utilized: ₹{{ outputs.fetch_summary_data.body.data.totalUtilized | number }}
+      Utilization Rate: {{ outputs.fetch_summary_data.body.data.utilizationPercentage }}%
+      
+      Project Status:
+      - On Track: {{ outputs.fetch_summary_data.body.data.statusCount['On Track'] }}
+      - At Risk: {{ outputs.fetch_summary_data.body.data.statusCount['At Risk'] }}
+      - Delayed: {{ outputs.fetch_summary_data.body.data.statusCount['Delayed'] }}
+      
+      AI ANALYSIS:
+      {{ outputs.fetch_summary_data.body.data.message }}
+      
+      ANOMALIES DETECTED:
+      - Projects with utilization < 10% after 60+ days are flagged as "At Risk"
+      - Delayed projects require immediate attention
+      - High utilization (>90%) indicates project completion phase
+
+  - id: identify_at_risk_projects
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      === AT-RISK PROJECTS REQUIRING INTERVENTION ===
+      
+      {% for village in outputs.fetch_village_data.body.data %}
+        {% for project in village.projects %}
+          {% if project.status == 'At Risk' or project.status == 'Delayed' %}
+      
+      Project: {{ project.name }}
+      Village: {{ village.name }}
+      Status: {{ project.status }}
+      Allocated: ₹{{ project.allocatedBudget | number }}
+      Utilized: ₹{{ project.utilizedBudget | number }}
+      Utilization %: {{ ((project.utilizedBudget / project.allocatedBudget) * 100) | number(1) }}%
+      Days Since Approval: {{ project.daysApproved }}
+      Department: {{ project.department }}
+      
+          {% endif %}
+        {% endfor %}
+      {% endfor %}
+
+  - id: generate_report
+    type: io.kestra.plugin.core.log.Log
+    message: |
+      === EXECUTIVE SUMMARY REPORT ===
+      Generated: {{ now() }}
+      
+      OVERALL HEALTH: 
+      {% if outputs.fetch_summary_data.body.data.utilizationPercentage > 75 %}
+      ✓ GOOD - High utilization rate indicates efficient fund deployment
+      {% elsif outputs.fetch_summary_data.body.data.utilizationPercentage > 50 %}
+      ⚠ MODERATE - Utilization could be improved
+      {% else %}
+      ✕ POOR - Low utilization requires investigation
+      {% endif %}
+      
+      RECOMMENDATIONS:
+      1. Prioritize completion of "At Risk" projects
+      2. Investigate delays in "Delayed" projects
+      3. Accelerate fund utilization in low-performing projects
+      4. Conduct department-wise performance review
+
+triggers:
+  - id: schedule_daily
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 * * *"
+    description: "Run daily at 9 AM to summarize fund allocation data"
