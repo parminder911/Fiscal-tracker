@@ -1,5 +1,5 @@
-import LoginPortal from "@/components/LoginPortal/LoginPortal";
+import Dashboard from "@/components/Dashboard/Dashboard";
 
 export default function Home() {
-  return <LoginPortal />;
+  return <Dashboard />;
 }
