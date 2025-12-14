@@ -1,15 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { getPunjabDistricts } from '@/services/locationService';
 import styles from './LoginPortal.module.css';
 
 export default function LoginPortal() {
+  const router = useRouter();
   const [districts, setDistricts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [loginLoading, setLoginLoading] = useState(false);
 
   useEffect(() => {
     const fetchDistricts = async () => {
@@ -28,9 +31,54 @@ export default function LoginPortal() {
     fetchDistricts();
   }, []);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log('Login attempt:', { userId, password });
+    setError(null);
+    setLoginLoading(true);
+
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: userId, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Login failed');
+        setLoginLoading(false);
+        return;
+      }
+
+      localStorage.setItem('user', JSON.stringify(data.user));
+      localStorage.setItem('token', data.token);
+
+      switch (data.user.role) {
+        case 'admin':
+          router.push('/admin');
+          break;
+        case 'district':
+          router.push('/district');
+          break;
+        case 'tehsil':
+          router.push('/tehsil');
+          break;
+        case 'sarpanch':
+          router.push('/sarpanch');
+          break;
+        case 'citizen':
+          router.push('/citizen');
+          break;
+        default:
+          router.push('/');
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+      setLoginLoading(false);
+    }
   };
 
   return (
@@ -93,17 +141,17 @@ export default function LoginPortal() {
               <div className="row g-3 mt-2">
                 <div className="col-md-6">
                   <button className={`btn btn-primary btn-lg w-100 ${styles.actionBtn}`}>
-                    <i className="bi bi-house-fill"></i> SEWA KENDRA
+                    <i className="bi bi-house-fill"></i> Projects
                   </button>
                 </div>
                 <div className="col-md-6">
                   <button className={`btn btn-primary btn-lg w-100 ${styles.actionBtn}`}>
-                    <i className="bi bi-download"></i> DOWNLOAD CERTIFICATE
+                    <i className="bi bi-download"></i> Tracking
                   </button>
                 </div>
                 <div className="col-md-6">
                   <button className={`btn btn-primary btn-lg w-100 ${styles.actionBtn}`}>
-                    <i className="bi bi-check-circle"></i> VERIFY CERTIFICATE
+                    <i className="bi bi-check-circle"></i> Approved
                   </button>
                 </div>
                 <div className="col-md-6">
@@ -169,3 +217,7 @@ export default function LoginPortal() {
     </div>
   );
 }
+
+
+
+

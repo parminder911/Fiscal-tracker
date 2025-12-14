@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styles from './Header.module.css';
 
 export default function Header() {
@@ -8,9 +9,9 @@ export default function Header() {
     <header className={styles.header}>
       <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
         <div className="container-fluid">
-          <a className="navbar-brand" href="/">
+          <Link className="navbar-brand" href="/">
             <span className={styles.logo}>fiscal-tracker</span>
-          </a>
+          </Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -25,19 +26,29 @@ export default function Header() {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">
+                <Link className="nav-link active" aria-current="page" href="/">
                   HOME
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#about">
+                <Link className="nav-link" href="/projects">
+                  PROJECTS
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" href="/about">
                   ABOUT
-                </a>
+                </Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#contact">
+                <Link className="nav-link" href="/contact">
                   CONTACT
-                </a>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" href="/grievance">
+                  GRIEVANCE
+                </Link>
               </li>
             </ul>
           </div>

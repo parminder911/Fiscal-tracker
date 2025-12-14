@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import styles from './Footer.module.css';
 
 export default function Footer() {
@@ -15,9 +16,12 @@ export default function Footer() {
           <div className="col-md-4 mb-3">
             <h5>Quick Links</h5>
             <ul className="list-unstyled">
-              <li><a href="#" className="text-white-50">Dashboard</a></li>
-              <li><a href="#" className="text-white-50">Transactions</a></li>
-              <li><a href="#" className="text-white-50">Reports</a></li>
+              <li><Link href="/" className="text-white-50">Home</Link></li>
+              <li><Link href="/projects" className="text-white-50">Projects</Link></li>
+              <li><Link href="/districts" className="text-white-50">Districts</Link></li>
+              <li><Link href="/about" className="text-white-50">About</Link></li>
+              <li><Link href="/contact" className="text-white-50">Contact</Link></li>
+              <li><Link href="/grievance" className="text-white-50">Grievance</Link></li>
             </ul>
           </div>
           <div className="col-md-4 mb-3">

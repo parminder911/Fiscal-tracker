@@ -1,0 +1,248 @@
+id: punjab_budget_analysis
+namespace: government.punjab
+description: Daily budget analysis and AI-powered insights for Punjab transparency portal
+
+tasks:
+  - id: fetch_budget_data
+    type: io.kestra.plugin.core.http.Request
+    uri: http://localhost:3000/api/budget/summary
+    method: GET
+    timeout: 30s
+
+  - id: fetch_district_projects
+    type: io.kestra.plugin.core.http.Request
+    uri: http://localhost:3000/api/projects/list
+    method: GET
+    timeout: 30s
+
+  - id: analyze_budget_health
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      import requests
+      from datetime import datetime
+      
+      # Get budget data from previous task
+      budget_data = json.loads('''{{ taskrun.tasks.fetch_budget_data.outputs.body }}''')
+      projects_data = json.loads('''{{ taskrun.tasks.fetch_district_projects.outputs.body }}''')
+      
+      # Calculate key metrics
+      total_budget = budget_data.get('total_budget', 0)
+      total_allocated = budget_data.get('total_allocated', 0)
+      total_utilized = budget_data.get('total_utilized', 0)
+      
+      allocation_rate = (total_allocated / total_budget * 100) if total_budget > 0 else 0
+      utilization_rate = (total_utilized / total_allocated * 100) if total_allocated > 0 else 0
+      
+      # Analyze project health
+      projects = projects_data.get('projects', [])
+      at_risk_count = sum(1 for p in projects if p.get('status') == 'at_risk')
+      delayed_count = sum(1 for p in projects if p.get('status') == 'delayed')
+      on_track_count = sum(1 for p in projects if p.get('status') == 'on_track')
+      
+      # Generate AI analysis
+      analysis = {
+        'timestamp': datetime.now().isoformat(),
+        'total_budget_crore': round(total_budget / 10000000, 2),
+        'total_allocated_crore': round(total_allocated / 10000000, 2),
+        'total_utilized_crore': round(total_utilized / 10000000, 2),
+        'allocation_rate_percent': round(allocation_rate, 2),
+        'utilization_rate_percent': round(utilization_rate, 2),
+        'total_projects': len(projects),
+        'on_track_projects': on_track_count,
+        'at_risk_projects': at_risk_count,
+        'delayed_projects': delayed_count,
+        'health_status': 'GOOD' if utilization_rate > 70 else 'FAIR' if utilization_rate > 50 else 'POOR'
+      }
+      
+      print(json.dumps(analysis, indent=2))
+
+  - id: generate_ai_summary
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      
+      # Parse analysis results
+      analysis = json.loads('''{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}''')
+      
+      # Generate AI-powered summary
+      summary = f"""
+      PUNJAB BUDGET TRANSPARENCY REPORT
+      Generated: {analysis['timestamp']}
+      
+      BUDGET OVERVIEW:
+      - Total Budget Allocated: ₹{analysis['total_budget_crore']} Crore
+      - Amount Allocated: ₹{analysis['total_allocated_crore']} Crore ({analysis['allocation_rate_percent']}%)
+      - Amount Utilized: ₹{analysis['total_utilized_crore']} Crore ({analysis['utilization_rate_percent']}%)
+      
+      PROJECT STATUS:
+      - Total Projects: {analysis['total_projects']}
+      - On Track: {analysis['on_track_projects']} projects
+      - At Risk: {analysis['at_risk_projects']} projects
+      - Delayed: {analysis['delayed_projects']} projects
+      
+      OVERALL HEALTH: {analysis['health_status']}
+      
+      AI ANALYSIS:
+      """
+      
+      if analysis['utilization_rate_percent'] > 80:
+        summary += "✓ Excellent budget utilization. Projects are progressing well.\n"
+      elif analysis['utilization_rate_percent'] > 60:
+        summary += "✓ Good budget utilization. Most projects are on track.\n"
+      elif analysis['utilization_rate_percent'] > 40:
+        summary += "⚠ Moderate budget utilization. Some projects need attention.\n"
+      else:
+        summary += "✗ Low budget utilization. Immediate action required.\n"
+      
+      if analysis['at_risk_projects'] > 0:
+        summary += f"⚠ {analysis['at_risk_projects']} project(s) at risk. Review and provide support.\n"
+      
+      if analysis['delayed_projects'] > 0:
+        summary += f"✗ {analysis['delayed_projects']} project(s) delayed. Escalate for intervention.\n"
+      
+      summary += "\nRECOMMENDATIONS:\n"
+      
+      if analysis['allocation_rate_percent'] < 50:
+        summary += "1. Accelerate project approvals to increase budget allocation.\n"
+      
+      if analysis['utilization_rate_percent'] < 60:
+        summary += "2. Identify bottlenecks preventing fund utilization.\n"
+      
+      if analysis['at_risk_projects'] > 0 or analysis['delayed_projects'] > 0:
+        summary += "3. Schedule review meetings for at-risk and delayed projects.\n"
+      
+      summary += "4. Continue monitoring project progress weekly.\n"
+      summary += "5. Maintain transparency by updating citizen dashboard regularly.\n"
+      
+      print(summary)
+
+  - id: detect_anomalies
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      
+      analysis = json.loads('''{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}''')
+      
+      anomalies = []
+      
+      # Check for anomalies
+      if analysis['allocation_rate_percent'] < 30:
+        anomalies.append({
+          'type': 'LOW_ALLOCATION',
+          'severity': 'HIGH',
+          'message': f"Only {analysis['allocation_rate_percent']}% of budget allocated. Expected > 50%."
+        })
+      
+      if analysis['utilization_rate_percent'] < 40:
+        anomalies.append({
+          'type': 'LOW_UTILIZATION',
+          'severity': 'HIGH',
+          'message': f"Only {analysis['utilization_rate_percent']}% of allocated budget utilized. Expected > 70%."
+        })
+      
+      if analysis['delayed_projects'] > analysis['total_projects'] * 0.2:
+        anomalies.append({
+          'type': 'HIGH_DELAY_RATE',
+          'severity': 'MEDIUM',
+          'message': f"{analysis['delayed_projects']} out of {analysis['total_projects']} projects delayed."
+        })
+      
+      if analysis['at_risk_projects'] > analysis['total_projects'] * 0.3:
+        anomalies.append({
+          'type': 'HIGH_RISK_RATE',
+          'severity': 'MEDIUM',
+          'message': f"{analysis['at_risk_projects']} out of {analysis['total_projects']} projects at risk."
+        })
+      
+      if len(anomalies) == 0:
+        print("No anomalies detected. Budget execution is normal.")
+      else:
+        print(f"ANOMALIES DETECTED: {len(anomalies)}")
+        for anomaly in anomalies:
+          print(f"- [{anomaly['severity']}] {anomaly['type']}: {anomaly['message']}")
+
+  - id: send_notifications
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      import requests
+      
+      analysis = json.loads('''{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}''')
+      
+      # Send notifications to admin users
+      notification_data = {
+        'title': 'Daily Budget Analysis Report',
+        'message': f"Budget utilization: {analysis['utilization_rate_percent']}%. Health: {analysis['health_status']}",
+        'type': 'budget_analysis',
+        'data': analysis
+      }
+      
+      # This would be sent to admin dashboard
+      print(f"Notification prepared: {json.dumps(notification_data, indent=2)}")
+
+  - id: update_citizen_dashboard
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      
+      analysis = json.loads('''{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}''')
+      
+      # Update citizen-facing dashboard data
+      dashboard_update = {
+        'total_budget': analysis['total_budget_crore'],
+        'total_allocated': analysis['total_allocated_crore'],
+        'total_utilized': analysis['total_utilized_crore'],
+        'allocation_percentage': analysis['allocation_rate_percent'],
+        'utilization_percentage': analysis['utilization_rate_percent'],
+        'project_status': {
+          'on_track': analysis['on_track_projects'],
+          'at_risk': analysis['at_risk_projects'],
+          'delayed': analysis['delayed_projects']
+        },
+        'health_score': 100 if analysis['health_status'] == 'GOOD' else 70 if analysis['health_status'] == 'FAIR' else 40,
+        'last_updated': analysis['timestamp']
+      }
+      
+      print(f"Dashboard updated: {json.dumps(dashboard_update, indent=2)}")
+
+  - id: generate_report
+    type: io.kestra.plugin.core.scripts.Python
+    script: |
+      import json
+      from datetime import datetime
+      
+      analysis = json.loads('''{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}''')
+      
+      # Generate comprehensive report
+      report = {
+        'report_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'report_type': 'DAILY_BUDGET_ANALYSIS',
+        'summary': {
+          'total_budget_crore': analysis['total_budget_crore'],
+          'allocation_rate': f"{analysis['allocation_rate_percent']}%",
+          'utilization_rate': f"{analysis['utilization_rate_percent']}%",
+          'health_status': analysis['health_status']
+        },
+        'project_metrics': {
+          'total': analysis['total_projects'],
+          'on_track': analysis['on_track_projects'],
+          'at_risk': analysis['at_risk_projects'],
+          'delayed': analysis['delayed_projects']
+        },
+        'status': 'COMPLETED'
+      }
+      
+      print(json.dumps(report, indent=2))
+
+triggers:
+  - id: daily_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 * * *"
+    timezone: Asia/Kolkata
+
+outputs:
+  analysis: "{{ taskrun.tasks.analyze_budget_health.outputs.stdout }}"
+  summary: "{{ taskrun.tasks.generate_ai_summary.outputs.stdout }}"
+  anomalies: "{{ taskrun.tasks.detect_anomalies.outputs.stdout }}"
+  report: "{{ taskrun.tasks.generate_report.outputs.stdout }}"

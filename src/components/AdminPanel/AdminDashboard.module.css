@@ -1,0 +1,259 @@
+.adminContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 10px 0 0 0;
+  font-size: 16px;
+  opacity: 0.9;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.statCard {
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.statCard:hover {
+  transform: translateY(-5px);
+}
+
+.statCard.approved {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.statCard.pending {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.statCard.objection {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.statCard.rejected {
+  background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+
+.statNumber {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.statLabel {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.tabs {
+  display: flex;
+  background-color: white;
+  border-bottom: 2px solid #e0e0e0;
+  padding: 0 30px;
+  gap: 0;
+}
+
+.tab {
+  padding: 15px 25px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: #1e3c72;
+}
+
+.tab.active {
+  color: #1e3c72;
+  border-bottom-color: #1e3c72;
+}
+
+.content {
+  flex: 1;
+  padding: 30px;
+}
+
+.dashboardContent,
+.projectsContent,
+.usersContent,
+.grievancesContent {
+  background-color: white;
+  border-radius: 8px;
+  padding: 25px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.dashboardContent h2,
+.projectsContent h2,
+.usersContent h2,
+.grievancesContent h2 {
+  margin-top: 0;
+  color: #1e3c72;
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.projectsTable {
+  overflow-x: auto;
+  margin-top: 20px;
+}
+
+.projectsTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.projectsTable thead {
+  background-color: #f3f4f6;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.projectsTable th {
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+}
+
+.projectsTable td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.projectsTable tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.badge.approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge.pending {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge.objection {
+  background-color: #fee2e2;
+  color: #7f1d1d;
+}
+
+.badge.rejected {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.btnSmall,
+.btnSmallDanger {
+  padding: 6px 12px;
+  margin-right: 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btnSmall {
+  background-color: #10b981;
+  color: white;
+}
+
+.btnSmall:hover {
+  background-color: #059669;
+}
+
+.btnSmallDanger {
+  background-color: #ef4444;
+  color: white;
+}
+
+.btnSmallDanger:hover {
+  background-color: #dc2626;
+}
+
+.btnPrimary {
+  padding: 10px 20px;
+  background-color: #1e3c72;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btnPrimary:hover {
+  background-color: #152a4d;
+}
+
+@media (max-width: 768px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .tabs {
+    overflow-x: auto;
+    padding: 0;
+  }
+
+  .tab {
+    padding: 12px 15px;
+    font-size: 12px;
+  }
+
+  .projectsTable {
+    font-size: 12px;
+  }
+
+  .projectsTable th,
+  .projectsTable td {
+    padding: 8px;
+  }
+}
