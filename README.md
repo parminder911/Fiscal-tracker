@@ -1,4 +1,4 @@
-🎯 What is FiscalTracker?
+**🎯 What is FiscalTracker?**
 FiscalTracker is a comprehensive financial management system designed specifically for government operations. It provides real-time tracking, transparency, and accountability across all administrative levels - from central government to village councils.
 
 The Problem We Solve
@@ -12,7 +12,7 @@ The Problem We Solve
 
 ❌ No real-time monitoring
 
-Our Solution
+**Our Solution**
 ✅ Digital workflow for all financial operations
 
 ✅ Real-time tracking of funds from center to village
@@ -23,8 +23,8 @@ Our Solution
 
 ✅ Transparent audit trails
 
-👥 Four-Tier Dashboard System
-1. Admin Dashboard 🏛️
+**👥 Four-Tier Dashboard System**
+**1. Admin Dashboard 🏛️**
 Central Control Center
 
 System-wide financial overview
@@ -35,7 +35,7 @@ Audit and compliance monitoring
 
 Performance analytics
 
-2. District Head Dashboard 🗺️
+**2. District Head Dashboard 🗺️**
 Regional Financial Management
 
 District-level fund allocation
@@ -46,7 +46,7 @@ Budget utilization reports
 
 Approval workflows
 
-3. Tehsildar Dashboard 🏢
+**3. Tehsildar Dashboard 🏢**
 Tehsil Operations Management
 
 Tehsil budget management
@@ -57,7 +57,7 @@ Expenditure approvals
 
 Document verification
 
-4. Sarpanch Dashboard 🏘️
+**4. Sarpanch Dashboard 🏘️**
 Village-Level Implementation
 
 Village fund tracking
@@ -68,8 +68,8 @@ Beneficiary management
 
 Local expenditure reporting
 
-🚀 Key Features
-🔒 Security & Access
+**🚀 Key Features**
+**🔒 Security & Access**
 Multi-factor authentication
 
 Role-based access control (4 levels)
@@ -78,7 +78,7 @@ End-to-end encryption
 
 Session management
 
-💸 Financial Management
+**💸 Financial Management**
 Real-time fund tracking
 
 Automated budget allocation
@@ -87,7 +87,7 @@ Digital approval workflows
 
 GST compliance integration
 
-📊 Analytics & Reports
+**📊 Analytics & Reports**
 Interactive dashboards
 
 Real-time alerts
@@ -96,22 +96,15 @@ Automated MIS reports
 
 Export to PDF/Excel
 
-📱 User Experience
-Responsive design (mobile/desktop)
-
-Multilingual support
-
-Offline capability
 
 
-
-Frontend:
+**Frontend:**
   - React 18 + TypeScript
   - Material-UI + Custom Components
   - Redux for State Management
   - Chart.js for Visualizations
 
-Backend:
+**Backend:**
   - Node.js + Express.js
   - PostgreSQL Database
   - Redis Caching
@@ -119,18 +112,14 @@ Backend:
 
 
 
-
-
-
-Prerequisites
+**Prerequisites**
 Node.js 18+
 PostgreSQL 14+
 Git
 
 
-
-
-🌟 Why Choose FiscalTracker?
+**
+**🌟 Why Choose FiscalTracker?****
 For Government
 85% faster processing than manual systems
 
@@ -159,7 +148,7 @@ Easy training and onboarding
 Scalable for any district size
 
 📞 Contact & Support
-Project Lead: Parminderjit Singh
+Project Lead: **Parminderjit Singh**
 
 
 
