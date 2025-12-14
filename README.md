@@ -35,6 +35,12 @@ Audit and compliance monitoring
 
 Performance analytics
 
+<img width="1271" height="601" alt="image" src="https://github.com/user-attachments/assets/57ad0660-227a-4c45-8853-ddb76a916d71" />
+
+
+
+
+
 **2. District Head Dashboard 🗺️**
 Regional Financial Management
 
@@ -45,6 +51,10 @@ Inter-tehsil transfer tracking
 Budget utilization reports
 
 Approval workflows
+
+<img width="1257" height="627" alt="image" src="https://github.com/user-attachments/assets/33066743-e2a8-4384-843f-dc9b0c385b71" />
+
+
 
 **3. Tehsildar Dashboard 🏢**
 Tehsil Operations Management
@@ -67,6 +77,11 @@ Project proposal submission
 Beneficiary management
 
 Local expenditure reporting
+
+
+<img width="1241" height="628" alt="image" src="https://github.com/user-attachments/assets/14593717-a2e4-4305-aba7-86179849897d" />
+
+
 
 **🚀 Key Features**
 **🔒 Security & Access**
@@ -150,6 +165,11 @@ Scalable for any district size
 📞 Contact & Support
 Project Lead: **Parminderjit Singh**
 
+
+
+
+
+<img width="1248" height="602" alt="image" src="https://github.com/user-attachments/assets/f5a4c68f-a0ff-4e63-b846-fabe49f0a86e" />
 
 
 
